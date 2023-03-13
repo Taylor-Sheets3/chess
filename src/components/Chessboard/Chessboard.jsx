@@ -1,6 +1,7 @@
 import './Chessboard.css';
 import Tile from '../Tile/Tile';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
+import Referee from '../../referee/Referee';
 
 const verticalAxis = ['1', '2', '3', '4', '5', '6', '7', '8'];
 const horizontalAxis = ['a', 'b', 'c', 'd', 'e', 'f', 'g',' h'];
@@ -10,25 +11,83 @@ for (let p = 0; p < 2; p++) {
   const type = (p === 0) ? 'b' : 'w';
   const y = (p === 0) ? 7 : 0;
 
-  initialBoardState.push({ image:`assets/images/rook_${type}.png`, x: 0, y})
-  initialBoardState.push({ image:`assets/images/rook_${type}.png`, x: 7, y})
-  initialBoardState.push({ image:`assets/images/knight_${type}.png`, x: 1, y})
-  initialBoardState.push({ image:`assets/images/knight_${type}.png`, x: 6, y})
-  initialBoardState.push({ image:`assets/images/bishop_${type}.png`, x: 2, y})
-  initialBoardState.push({ image:`assets/images/bishop_${type}.png`, x: 5, y})
-  initialBoardState.push({ image:`assets/images/queen_${type}.png`, x: 3, y})
-  initialBoardState.push({ image:`assets/images/king_${type}.png`, x: 4, y})
+  initialBoardState.push({
+    image:`assets/images/rook_${type}.png`,
+    x: 0,
+    y,
+    type: 'rook',
+    team: type
+  })
+  initialBoardState.push({
+    image:`assets/images/rook_${type}.png`,
+    x: 7,
+    y,
+    type: 'rook',
+    team: type
+  })
+  initialBoardState.push({
+    image:`assets/images/knight_${type}.png`,
+    x: 1,
+    y,
+    type: 'knight',
+    team: type
+  })
+  initialBoardState.push({
+    image:`assets/images/knight_${type}.png`,
+    x: 6,
+    y,
+    type: 'knight',
+    team: type
+  })
+  initialBoardState.push({
+    image:`assets/images/bishop_${type}.png`,
+    x: 2,
+    y,
+    type: 'bishop',
+    team: type
+  })
+  initialBoardState.push({
+    image:`assets/images/bishop_${type}.png`,
+    x: 5,
+    y,
+    type: 'bishop',
+    team: type
+  })
+  initialBoardState.push({
+    image:`assets/images/queen_${type}.png`,
+    x: 3,
+    y,
+    type: 'queen',
+    team: type
+  })
+  initialBoardState.push({
+    image:`assets/images/king_${type}.png`,
+    x: 4,
+    y,
+    type: 'king',
+    team: type
+  })
 }
 
 for (let i = 0; i < 8; i ++) {
-  initialBoardState.push({ image:'assets/images/pawn_b.png', x: i, y: 6 })
+  initialBoardState.push({
+    image:'assets/images/pawn_b.png',
+    x: i,
+    y: 6,
+    type: 'pawn',
+    team: 'b'
+  })
 }
 
 for (let i = 0; i < 8; i ++) {
-  initialBoardState.push({ image:'assets/images/pawn_w.png', x: i, y: 1 })
+  initialBoardState.push({
+    image:'assets/images/pawn_w.png',
+    x: i,
+    y: 1,
+    type: 'pawn',
+    team: 'w'
+  })
 }
-
-
 
 export default function Chessboard() {
   const [activePiece, setActivePiece] = useState(null)
@@ -36,6 +95,7 @@ export default function Chessboard() {
   const[gridY, setGridY] = useState(0);
   const [pieces, setPieces] = useState(initialBoardState);
   const chessboardRef = useRef(null)
+  const referee = new Referee();
 
   //controls piece movement
   function grabPiece(e: React.MouseEvent) {
@@ -94,11 +154,22 @@ export default function Chessboard() {
       const x = Math.floor((e.clientX - chessboard.offsetLeft) / 100);
       const y = Math.abs(Math.ceil((e.clientY - chessboard.offsetTop - 800) / 100));
       console.log(x, y)
+
+
+      //updates piece position
       setPieces((value) => {
         const pieces = value.map((p) => {
           if (p.x === gridX && p.y === gridY) {
-            p.x = x;
-            p.y = y;
+            //checks if the move is valid
+            const validMove = referee.isValidMove(gridX, gridY, x, y, p.type, p.team)
+            if (validMove) {
+              p.x = x;
+              p.y = y;
+            } else {
+              activePiece.style.position = 'relative';
+              activePiece.style.removeProperty('top');
+              activePiece.style.removeProperty('left');
+            }
           }
           return p;
         });
