@@ -53,10 +53,10 @@ export default function Chessboard() {
     const chessboard = chessboardRef.current;
     if (activePiece && chessboard) {
 
-      const minX = chessboard.current.offsetLeft - 25;
-      const minY = chessboard.current.offsetTop - 25;
-      const maxX = chessboard.current.offsetLeft + chessboard.clientWidth;
-      const maxY = chessboard.current.offsetTop + chessboard.clientHeight;
+      const minX = chessboard.offsetLeft - 25;
+      const minY = chessboard.offsetTop - 25;
+      const maxX = chessboard.offsetLeft + chessboard.clientWidth - 75;
+      const maxY = chessboard.offsetTop + chessboard.clientWidth - 75;
 
       const x = e.clientX - 50;
       const y = e.clientY - 50;
@@ -71,13 +71,18 @@ export default function Chessboard() {
         activePiece.style.left = `${x}px`;
       }
 
-      if (x < minX) {
+      if (y < minY) {
         activePiece.style.top = `${minY}px`;
-      } else if (x > maxX) {
+      } else if (y > maxY) {
         activePiece.style.top = `${maxY}px`;
       } else {
         activePiece.style.top = `${y}px`;
       }
+      // activePiece.style.left = `${x}px` - 50;
+      // activePiece.style.top = `${y}px` - 50;
+
+      // activePiece.style.left = (x < minX) ? `${minX}px` : `${x}px`;
+      // activePiece.style.top = (y < minY) ? `${minY}px` : `${y}px`;
     }
   }
 
