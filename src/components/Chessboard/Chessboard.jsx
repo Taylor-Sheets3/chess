@@ -94,6 +94,7 @@ export default function Chessboard() {
   const [gridX, setGridX] = useState(0);
   const[gridY, setGridY] = useState(0);
   const [pieces, setPieces] = useState(initialBoardState);
+  //useRef allows the board to track game state as moves are made
   const chessboardRef = useRef(null)
   const referee = new Referee();
 
@@ -128,19 +129,22 @@ export default function Chessboard() {
       const y = e.clientY - 50;
 
       activePiece.style.position = 'absolute';
-
+      //maintains x boundary
       if (x < minX) {
         activePiece.style.left = `${minX}px`;
       } else if (x > maxX) {
         activePiece.style.left = `${maxX}px`;
+        //sets new x coordinate
       } else {
         activePiece.style.left = `${x}px`;
       }
 
+      //maintains y boundary
       if (y < minY) {
         activePiece.style.top = `${minY}px`;
       } else if (y > maxY) {
         activePiece.style.top = `${maxY}px`;
+        //sets new y coordinate
       } else {
         activePiece.style.top = `${y}px`;
       }
@@ -153,28 +157,36 @@ export default function Chessboard() {
     if (activePiece && chessboard) {
       const x = Math.floor((e.clientX - chessboard.offsetLeft) / 100);
       const y = Math.abs(Math.ceil((e.clientY - chessboard.offsetTop - 800) / 100));
-      console.log(x, y)
-
-
-      //updates piece position
-      setPieces((value) => {
-        const pieces = value.map((p) => {
-          if (p.x === gridX && p.y === gridY) {
-            //checks if the move is valid
-            const validMove = referee.isValidMove(gridX, gridY, x, y, p.type, p.team)
-            if (validMove) {
-              p.x = x;
-              p.y = y;
-            } else {
-              activePiece.style.position = 'relative';
-              activePiece.style.removeProperty('top');
-              activePiece.style.removeProperty('left');
+      const currentPiece = pieces.find((p) => p.x === gridX && p.y === gridY);
+      //if the mouseup event is targeting a piece
+      if (currentPiece) {
+        const validMove = referee.isValidMove(gridX, gridY, x, y, currentPiece.type, currentPiece.team, pieces)
+        //checks if the move is valid.  attack validation is done in the referee component
+        if (validMove) {
+          //updates the board to reflect new piece position and any taken pieces
+          //returns the current board state with the only modifications being:
+          //  1. the moved piece updated position
+          //  2. any taken pieces are removed from the board
+          const updatedPieces = pieces.reduce((results, piece) => {
+            if (piece.x === gridX && piece.y === gridY) {
+              piece.x = x;
+              piece.y = y;
+              results.push(piece);
+            } else if (!(piece.x === x && piece.y === y)) {
+              results.push(piece);
             }
-          }
-          return p;
-        });
-        return pieces;
-      })
+
+            return results;
+          }, []);
+
+          setPieces(updatedPieces);
+          //snap feature automatically adjusts piece to the center of the tile
+        } else {
+            activePiece.style.position = 'relative';
+            activePiece.style.removeProperty('top');
+            activePiece.style.removeProperty('left');
+        }
+      }
       setActivePiece(null);
     }
   }
@@ -183,6 +195,7 @@ export default function Chessboard() {
   let board = [];
   for (let j = verticalAxis.length - 1; j >=0; j--) {
     for (let i = 0; i < horizontalAxis.length; i ++) {
+      //an even or odd number that will determine if squares are black or white
       const number = i + j + 2;
       let image = null;
 
