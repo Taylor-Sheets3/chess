@@ -1,4 +1,4 @@
-import { pawnRules, knightRules, bishopRules, rookRules, kingRules, queenRules } from './rules';
+import { pawnRules, knightRules, bishopRules, rookRules, kingRules, queenRules, getPawnMoves } from './rules';
 
 export default class Referee {
   isEnPassantMove(initialPosition: object, newPosition: object, pieceType: string, team: string, boardState: object) {
@@ -39,5 +39,11 @@ export default class Referee {
     }
 
     return false;
+  }
+
+  getValidMoves(piece: object, boardState: object) {
+    if (piece.type === 'pawn') {
+      return getPawnMoves(piece, boardState);
+    }
   }
 }

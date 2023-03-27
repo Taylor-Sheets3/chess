@@ -21,7 +21,8 @@ for (let p = 0; p < 2; p++) {
       y,
     },
     type: 'rook',
-    team: type
+    team: type,
+    possibleMoves: [],
   })
   initialBoardState.push({
     image:`assets/images/rook_${type}.png`,
@@ -30,7 +31,8 @@ for (let p = 0; p < 2; p++) {
       y,
     },
     type: 'rook',
-    team: type
+    team: type,
+    possibleMoves: [],
   })
   initialBoardState.push({
     image:`assets/images/knight_${type}.png`,
@@ -39,7 +41,8 @@ for (let p = 0; p < 2; p++) {
       y,
     },
     type: 'knight',
-    team: type
+    team: type,
+    possibleMoves: [],
   })
   initialBoardState.push({
     image:`assets/images/knight_${type}.png`,
@@ -48,7 +51,8 @@ for (let p = 0; p < 2; p++) {
       y,
     },
     type: 'knight',
-    team: type
+    team: type,
+    possibleMoves: [],
   })
   initialBoardState.push({
     image:`assets/images/bishop_${type}.png`,
@@ -57,7 +61,8 @@ for (let p = 0; p < 2; p++) {
       y,
     },
     type: 'bishop',
-    team: type
+    team: type,
+    possibleMoves: [],
   })
   initialBoardState.push({
     image:`assets/images/bishop_${type}.png`,
@@ -66,7 +71,8 @@ for (let p = 0; p < 2; p++) {
       y,
     },
     type: 'bishop',
-    team: type
+    team: type,
+    possibleMoves: [],
   })
   initialBoardState.push({
     image:`assets/images/queen_${type}.png`,
@@ -75,7 +81,8 @@ for (let p = 0; p < 2; p++) {
       y,
     },
     type: 'queen',
-    team: type
+    team: type,
+    possibleMoves: [],
   })
   initialBoardState.push({
     image:`assets/images/king_${type}.png`,
@@ -84,7 +91,8 @@ for (let p = 0; p < 2; p++) {
       y,
     },
     type: 'king',
-    team: type
+    team: type,
+    possibleMoves: [],
   })
 }
 
@@ -97,6 +105,7 @@ for (let i = 0; i < 8; i ++) {
     },
     type: 'pawn',
     team: 'b',
+    possibleMoves: [],
     enPassant: false,
   })
 }
@@ -110,6 +119,7 @@ for (let i = 0; i < 8; i ++) {
     },
     type: 'pawn',
     team: 'w',
+    possibleMoves: [],
     enPassant: false,
   })
 }
