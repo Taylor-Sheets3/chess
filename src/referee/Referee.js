@@ -1,10 +1,4 @@
-import { pawnRules } from './PawnRules';
-import { knightRules } from './KnightRules';
-import { bishopRules } from './BishopRules';
-import { rookRules } from './RookRules';
-import { kingRules } from './KingRules';
-import { queenRules } from './QueenRules';
-
+import { pawnRules, knightRules, bishopRules, rookRules, kingRules, queenRules } from './rules';
 
 export default class Referee {
   isEnPassantMove(initialPosition: object, newPosition: object, pieceType: string, team: string, boardState: object) {
